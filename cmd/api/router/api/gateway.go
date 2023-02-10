@@ -4,7 +4,7 @@ package Api
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"mini-min-tiktok/handler/api"
+	"mini-min-tiktok/cmd/api/handler/api"
 )
 
 /*
