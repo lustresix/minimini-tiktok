@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  # MySQL
+  mysql:
+    image: mysql:latest
+    volumes:
+      - ./pkg/configs/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=tiktok
+      - MYSQL_USER=gorm
+      - MYSQL_PASSWORD=gorm
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+
+  # Nacos
+  nacos:
+    image: "nacos/nacos-server:v2.1.2-slim"
+    ports:
+      - "8849:8848"
+    environment:
+      - MODE=standalone
+      - JVM_XMS=512m
+      - JVM_XMX=512m
+      - JVM_XMN=256m
