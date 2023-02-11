@@ -4,7 +4,12 @@ package api
 
 import (
 	"context"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/hertz/pkg/common/utils"
 	"mini-min-tiktok/cmd/api/model/api"
+	"mini-min-tiktok/cmd/api/rpc"
+	"mini-min-tiktok/kitex_gen/userservice"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -12,7 +17,7 @@ import (
 
 // Feed .
 // @router /douyin/feed [GET]
-func Feed(ctx context.Context, c *app.RequestContext) {
+func Feed(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.FeedReq
 	err = c.BindAndValidate(&req)
@@ -28,39 +33,70 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 
 // UserRegister .
 // @router /douyin/user/register [POST]
-func UserRegister(ctx context.Context, c *app.RequestContext) {
+func UserRegister(_ context.Context, c *app.RequestContext) {
 	var err error
-	var req api.UserRegisterReq
-	err = c.BindAndValidate(&req)
+	username := c.Query("username")
+	password := c.Query("password")
+	hlog.Info("start call login rpc api")
+	hlog.Infof("name: %v, pass: %v", username, password)
+	resp := &api.UserRegisterResp{}
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
 		return
 	}
-
-	resp := new(api.UserRegisterResp)
+	registerResponse, err := rpc.UserRpcClient.Register(context.Background(), &userservice.UserRegisterReq{
+		Username: username,
+		Password: password,
+	})
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{"status_code": 1, "status_msg": err.Error()})
+		return
+	}
+	resp = &api.UserRegisterResp{
+		StatusCode: int64(registerResponse.StatusCode),
+		StatusMsg:  registerResponse.StatusMsg,
+		UserID:     registerResponse.UserId,
+		Token:      registerResponse.Token,
+	}
 
 	c.JSON(consts.StatusOK, resp)
 }
 
 // UserLogin .
 // @router /douyin/user/login [POST]
-func UserLogin(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req api.UserLoginReq
-	err = c.BindAndValidate(&req)
+func UserLogin(_ context.Context, c *app.RequestContext) {
+	username := c.Query("username")
+	password := c.Query("password")
+	hlog.Info("start call login rpc api")
+	hlog.Infof("name: %v, pass: %v", username, password)
+	loginResponse, err := rpc.UserRpcClient.Login(context.Background(), &userservice.UserLoginReq{
+		Username: username,
+		Password: password,
+	})
+	hlog.Info("call login rpc api end")
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		hlog.Error("error occur", err)
+		c.JSON(consts.StatusOK, utils.H{"status_code": 1, "status_msg": err.Error()})
 		return
 	}
-
-	resp := new(api.UserLoginResp)
+	if loginResponse == nil {
+		c.JSON(consts.StatusOK, utils.H{"status_code": 1, "status_msg": err.Error()})
+		return
+	}
+	resp := &api.UserLoginResp{
+		StatusCode: int64(loginResponse.StatusCode),
+		StatusMsg:  loginResponse.StatusMsg,
+		UserID:     loginResponse.UserId,
+		Token:      loginResponse.Token,
+	}
+	hlog.Infof("get resp: %+v", loginResponse)
 
 	c.JSON(consts.StatusOK, resp)
 }
 
 // PublishAction .
 // @router /douyin/publish/action [POST]
-func PublishAction(ctx context.Context, c *app.RequestContext) {
+func PublishAction(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.PublishActionReq
 	err = c.BindAndValidate(&req)
@@ -76,7 +112,7 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 
 // CommentAction .
 // @router /douyin/comment/action [POST]
-func CommentAction(ctx context.Context, c *app.RequestContext) {
+func CommentAction(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.CommentActionReq
 	err = c.BindAndValidate(&req)
@@ -92,7 +128,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 
 // RelationAction .
 // @router /douyin/relation/action [POST]
-func RelationAction(ctx context.Context, c *app.RequestContext) {
+func RelationAction(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.RelationActionReq
 	err = c.BindAndValidate(&req)
@@ -108,39 +144,64 @@ func RelationAction(ctx context.Context, c *app.RequestContext) {
 
 // RelationFollowerList .
 // @router /douyin/relation/follower/list [GET]
-func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
+func RelationFollowerList(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.RelationFollowerListReq
+	var resp api.RelationFollowerListResp
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
 		return
 	}
+	userId, err := strconv.ParseInt(req.UserID, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
+	}
+	result, err := rpc.UserRpcClient.FollowerList(context.Background(), &userservice.RelationFollowerListReq{
+		UserId: strconv.FormatInt(userId, 10),
+		Token:  req.Token,
+	})
+	if err != nil {
+		resp.StatusCode = 1
+		resp.StatusMsg = "请求失败"
+		c.JSON(consts.StatusOK, resp)
+	}
 
-	resp := new(api.RelationFollowerListResp)
-
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(consts.StatusOK, result)
 }
 
 // RelationFriendList .
 // @router /douyin/relation/friend/list [GET]
-func RelationFriendList(ctx context.Context, c *app.RequestContext) {
+func RelationFriendList(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.RelationFriendListReq
+	var resp api.RelationFriendListResp
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
 		return
 	}
-
-	resp := new(api.RelationFriendListResp)
-
-	c.JSON(consts.StatusOK, resp)
+	userId, err := strconv.ParseInt(req.UserID, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
+		return
+	}
+	result, err := rpc.UserRpcClient.FriendList(context.Background(), &userservice.RelationFriendListReq{
+		UserId: strconv.FormatInt(userId, 10),
+		Token:  req.Token,
+	})
+	if err != nil {
+		resp.StatusCode = 1
+		resp.StatusMsg = err.Error()
+		resp.UserList = nil
+		c.JSON(consts.StatusOK, resp)
+	}
+	c.JSON(consts.StatusOK, result)
 }
 
 // FavoriteAction .
 // @router /douyin/favorite/action [POST]
-func FavoriteAction(ctx context.Context, c *app.RequestContext) {
+func FavoriteAction(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.FavoriteActionReq
 	err = c.BindAndValidate(&req)
