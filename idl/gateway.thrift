@@ -142,6 +142,19 @@ struct RelationFriendListResp {
     3: list<User> user_list
 }
 
+// 点赞请求
+struct FavoriteActionReq {
+    1: string token
+    2: string video_id
+    3: string action_type
+}
+
+// 点赞响应
+struct FavoriteActionResp {
+    1: i64 status_code
+    2: string status_msg
+}
+
 service ApiService {
     FeedResp Feed(1: FeedReq req) (api.get="/douyin/feed") // 视频流接口
     UserRegisterResp UserRegister(1: UserRegisterReq req) (api.post="/douyin/user/register") // 用户注册接口
@@ -151,4 +164,5 @@ service ApiService {
     RelationActionResp RelationAction(1: RelationActionReq req) (api.post="/douyin/relation/action") // 关系操作接口
     RelationFollowerListResp RelationFollowerList(1: RelationFollowerListReq req) (api.get="/douyin/relation/follower/list") // 用户粉丝列表接口
     RelationFriendListResp RelationFriendList(1: RelationFriendListReq req) (api.get="/douyin/relation/friend/list") // 用户好友列表接口
+    FavoriteActionResp FavoriteAction(1: FavoriteActionReq req) (api.post="/douyin/favorite/action") // 点赞接口
 }

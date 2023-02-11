@@ -87,9 +87,23 @@ struct RelationActionResp {
 
 }
 
+// 点赞请求
+struct FavoriteActionReq {
+    1: string token
+    2: string video_id
+    3: string action_type
+}
+
+// 点赞响应
+struct FavoriteActionResp {
+    1: i64 status_code
+    2: string status_msg
+}
+
 service VideoService {
     FeedResp Feed(1: FeedReq req) // 视频流接口
     PublishActionResp PublishAction(1: PublishActionReq req) // 视频投稿接口
     CommentActionResp CommentAction(1: CommentActionReq req) // 评论操作接口
-    RelationActionResp RelationAction(1: RelationActionReq req) (api.post="/douyin/relation/action") // 关系操作接口
+    RelationActionResp RelationAction(1: RelationActionReq req) // 关系操作接口
+    FavoriteActionResp FavoriteAction(1: FavoriteActionReq req) (api.post="/douyin/favorite/action") // 点赞接口
 }

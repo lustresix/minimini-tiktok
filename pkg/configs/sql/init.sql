@@ -5,7 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 50736
  Source Host           :
- Source Schema         : mini_tiktok
+ Source Schema         : mini-min-tiktok
 
  Target Server Type    : MySQL
  Target Server Version : 50736
