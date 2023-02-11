@@ -25,6 +25,10 @@ func Register(r *server.Hertz) {
 			_comment.POST("/action", append(_comment_ctionMw(), api.CommentAction)...)
 		}
 		{
+			_favorite := _douyin.Group("/favorite", _favoriteMw()...)
+			_favorite.POST("/action", append(_favorite_ctionMw(), api.FavoriteAction)...)
+		}
+		{
 			_publish := _douyin.Group("/publish", _publishMw()...)
 			_publish.POST("/action", append(_publish_ctionMw(), api.PublishAction)...)
 		}

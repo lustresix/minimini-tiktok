@@ -31,6 +31,16 @@ func _comment_ctionMw() []app.HandlerFunc {
 	return nil
 }
 
+func _favoriteMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _favorite_ctionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
 func _publishMw() []app.HandlerFunc {
 	// your code...
 	return nil

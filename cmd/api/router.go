@@ -4,27 +4,12 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"mini-min-tiktok/cmd/api/handler"
-	"mini-min-tiktok/cmd/api/handler/api"
+	handler "mini-min-tiktok/cmd/api/handler"
 )
 
 // customizeRegister registers customize routers.
 func customizedRegister(r *server.Hertz) {
 	r.GET("/ping", handler.Ping)
 
-	apiRouter := r.Group("/douyin")
-
-	// basic apis
-	apiRouter.GET("/feed/", api.Feed)
-	apiRouter.POST("/user/register/", api.UserRegister)
-	apiRouter.POST("/user/login/", api.UserLogin)
-	apiRouter.POST("/publish/action/", api.PublishAction)
-
-	// extra apis - I
-	apiRouter.POST("/comment/action/", api.CommentAction)
-
-	// extra apis - II
-	apiRouter.POST("/relation/action/", api.RelationAction)
-	apiRouter.GET("/relation/follower/list/", api.RelationFollowerList)
-	apiRouter.GET("/relation/friend/list/", api.RelationFriendList)
+	// your code ...
 }

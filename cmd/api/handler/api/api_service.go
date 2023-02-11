@@ -4,11 +4,7 @@ package api
 
 import (
 	"context"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/cloudwego/hertz/pkg/common/utils"
 	"mini-min-tiktok/cmd/api/model/api"
-	"mini-min-tiktok/cmd/api/rpc"
-	"mini-min-tiktok/kitex_gen/userservice"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -35,33 +31,13 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.UserRegisterReq
-	// 获取json信息
-	username := c.Query("username")
-	password := c.Query("password")
-	hlog.Info("start call login rpc api")
-	hlog.Infof("name: %v, pass: %v", username, password)
-	// 绑定信息
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
+		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	// RPC 传给user
-	registerResponse, err := rpc.UserRpcClient.Register(context.Background(), &userservice.UserRegisterReq{
-		Username: username,
-		Password: password,
-	})
-	if err != nil {
-		c.JSON(consts.StatusOK, utils.H{"status_code": 1, "status_msg": err.Error()})
-		return
-	}
-	// 返回
-	resp := &api.UserRegisterResp{
-		StatusCode: registerResponse.StatusCode,
-		StatusMsg:  registerResponse.StatusMsg,
-		UserID:     registerResponse.UserId,
-		Token:      registerResponse.Token,
-	}
+
+	resp := new(api.UserRegisterResp)
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -69,32 +45,15 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 // UserLogin .
 // @router /douyin/user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	username := c.Query("username")
-	password := c.Query("password")
-	hlog.Info("start call login rpc api")
-	hlog.Infof("name: %v, pass: %v", username, password)
-	// RPC
-	loginResponse, err := rpc.UserRpcClient.Login(context.Background(), &userservice.UserLoginReq{
-		Username: username,
-		Password: password,
-	})
-	hlog.Info("call login rpc api end")
+	var err error
+	var req api.UserLoginReq
+	err = c.BindAndValidate(&req)
 	if err != nil {
-		hlog.Error("error occur", err)
-		c.JSON(consts.StatusOK, utils.H{"status_code": 1, "status_msg": err.Error()})
+		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	if loginResponse == nil {
-		c.JSON(consts.StatusOK, utils.H{"status_code": 1, "status_msg": err.Error()})
-		return
-	}
-	resp := &api.UserLoginResp{
-		StatusCode: int64(loginResponse.StatusCode),
-		StatusMsg:  loginResponse.StatusMsg,
-		UserID:     loginResponse.UserId,
-		Token:      loginResponse.Token,
-	}
-	hlog.Infof("get resp: %+v", loginResponse)
+
+	resp := new(api.UserLoginResp)
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -175,6 +134,22 @@ func RelationFriendList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(api.RelationFriendListResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// FavoriteAction .
+// @router /douyin/favorite/action [POST]
+func FavoriteAction(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.FavoriteActionReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.FavoriteActionResp)
 
 	c.JSON(consts.StatusOK, resp)
 }

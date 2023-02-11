@@ -105,5 +105,5 @@ service VideoService {
     PublishActionResp PublishAction(1: PublishActionReq req) // 视频投稿接口
     CommentActionResp CommentAction(1: CommentActionReq req) // 评论操作接口
     RelationActionResp RelationAction(1: RelationActionReq req) // 关系操作接口
-    FavoriteActionResp FavoriteAction(1: FavoriteActionReq req) (api.post="/douyin/favorite/action") // 点赞接口
+    FavoriteActionResp FavoriteAction(1: FavoriteActionReq req) // 点赞接口
 }
