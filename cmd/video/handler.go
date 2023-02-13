@@ -3,7 +3,12 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/google/uuid"
+	"mini-min-tiktok/cmd/video/mw/cos"
 	videoservice "mini-min-tiktok/kitex_gen/videoservice"
+	"mini-min-tiktok/pkg/configs/config"
 	"mini-min-tiktok/pkg/dal/model"
 	"mini-min-tiktok/pkg/dal/query"
 	jwt "mini-min-tiktok/pkg/utils"
@@ -22,13 +27,50 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *videoservice.FeedReq) 
 
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *videoservice.PublishActionReq) (resp *videoservice.PublishActionResp, err error) {
-	// TODO: Your code here...
+	resp = &videoservice.PublishActionResp{}
+	l := len(req.Data)
+	klog.Infof("视频长度：%d", l)
+	// mb不知道为什么thrift的byte生成出来的int8啊啊啊
+	bytes := make([]byte, l)
+	for i, _ := range req.Data {
+		bytes[i] = byte(req.Data[i])
+	}
+	// 生成唯一通识码
+	uuidv4, _ := uuid.NewUUID()
+	uuidname := uuidv4.String()
+	path := fmt.Sprintf("%s.mp4", uuidname)
+
+	tv := query.Q.TVideo
+	cliams, _ := jwt.CheckToken(req.Token)
+	userId := cliams.UserId
+	// 将视频保存到cos里
+	videoPath, photoPath, err := cos.SaveUploadedFile(ctx, bytes, path)
+	if err != nil {
+		return
+	}
+	// 将元数据存入数据库
+	url := config.GlobalConfigs.CosConfig.Url
+	err = tv.WithContext(context.Background()).
+		Create(&model.TVideo{
+			AuthorID:      userId,
+			PlayURL:       fmt.Sprintf("%s%s", url, videoPath),
+			CoverURL:      fmt.Sprintf("%s%s", url, photoPath),
+			FavoriteCount: 0,
+			CommentCount:  0,
+			IsFavorite:    false,
+			Title:         req.Title,
+			//CreateDate:    time.Now(),
+		})
+	if err != nil {
+		klog.Error("Error uploading file:", err)
+		err = fmt.Errorf("视频保存失败：%w", err)
+		return
+	}
 	return
 }
 
 // CommentAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) CommentAction(ctx context.Context, req *videoservice.CommentActionReq) (resp *videoservice.CommentActionResp, err error) {
-	// TODO: Your code here...
 	// 评论操作
 	queryUser := query.Q.TUser
 	queryVideo := query.Q.TVideo

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"mini-min-tiktok/cmd/video/mw/cos"
 	"mini-min-tiktok/cmd/video/rpc"
 	"mini-min-tiktok/kitex_gen/videoservice/videoservice"
 	"net"
@@ -29,6 +30,7 @@ func Init() {
 	config.Init()
 	rpc.Init()
 	dal.Init()
+	cos.Init()
 	klog.SetLogger(kitexlogrus.NewLogger())
 	klog.SetLevel(klog.LevelInfo)
 }

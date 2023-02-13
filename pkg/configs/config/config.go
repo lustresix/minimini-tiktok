@@ -16,13 +16,9 @@ type GlobalConfig struct {
 		Host string
 		Port int
 	} `mapstructure:"redis"`
-	FtpConfig struct {
-		Host     string
-		Port     int
-		Username string
-		Password string
-	} `mapstructure:"ftp"`
-	StaticConfig struct {
-		Url string
-	} `mapstructure:"static"`
+	CosConfig struct {
+		Url       string
+		SecretId  string `mapstructure:"secret_id"`
+		SecretKey string `mapstructure:"secret_key"`
+	} `mapstructure:"cos"`
 }

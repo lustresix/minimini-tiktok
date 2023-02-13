@@ -5,3 +5,17 @@ db:
   username: gorm
   password: gorm
   database: tiktok
+
+mq:
+  host: localhost
+  port: 9093
+
+redis:
+  host: localhost
+  port: 6379
+
+
+cos:
+  url: https://<bucket>.cos.<region>.myqcloud.com
+  secret_id:
+  secret_key:

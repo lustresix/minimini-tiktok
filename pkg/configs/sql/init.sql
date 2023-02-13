@@ -94,6 +94,8 @@ CREATE TABLE `t_video`  (
                             `comment_count` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
                             `is_favorite` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已点赞(0为未点赞, 1为已点赞)',
                             `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '视频标题',
+                            `create_date` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '视频上传时间',
+                            `delete_date` datetime COMMENT '视频删除日期，格式为mm-dd',
                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
