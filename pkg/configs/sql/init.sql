@@ -27,8 +27,8 @@ CREATE TABLE `t_comment`  (
                               `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '评论内容',
                               `video_id` int(10) UNSIGNED NOT NULL COMMENT '视频id',
                               `create_date` datetime NOT NULL COMMENT '评论发布日期，格式为mm-dd',
-                              `update_date` datetime NOT NULL COMMENT '评论更新日期，格式为mm-dd',
-                              `delete_date` datetime NOT NULL COMMENT '评论删除日期，格式为mm-dd',
+                              `update_date` datetime COMMENT '评论更新日期，格式为mm-dd',
+                              `delete_date` datetime COMMENT '评论删除日期，格式为mm-dd',
                               PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -76,8 +76,8 @@ CREATE TABLE `t_user`  (
                            `follow_count` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '关注数',
                            `follower_count` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '粉丝数',
                            `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '密码',
-                           `update_date` datetime NOT NULL COMMENT '用户更新日期，格式为mm-dd',
-                           `delete_date` datetime NOT NULL COMMENT '用户删除日期，格式为mm-dd',
+                           `update_date` datetime COMMENT '用户更新日期，格式为mm-dd',
+                           `delete_date` datetime COMMENT '用户删除日期，格式为mm-dd',
                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 

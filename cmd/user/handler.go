@@ -100,19 +100,22 @@ func (s *UserserviceImpl) FollowerList(ctx context.Context, req *userservice.Rel
 	}
 	// 将所有的关注用户信息进行添加到 返回值中
 	var user userservice.User
+	var list []*userservice.User
 	for _, tUser := range users {
 		user.Id = tUser.ID
 		user.Name = tUser.Name
 		user.FollowerCount = tUser.FollowerCount
 		user.FollowCount = tUser.FollowCount
 		user.IsFollow = true
-		// 这里要新建一个新的对象否则会一直添加最后一个
-		var list userservice.User
-		list = user
-		resp.UserList = append(resp.UserList, &list)
+		var us userservice.User
+		us = user
+		list = append(list, &us)
 	}
-	resp.StatusCode = 0
-	resp.StatusMsg = "the request succeeded"
+	resp = &userservice.RelationFollowerListResp{
+		StatusCode: 0,
+		StatusMsg:  "the request succeeded",
+		UserList:   list,
+	}
 	return
 }
 
@@ -162,11 +165,12 @@ func (s *UserserviceImpl) FriendList(ctx context.Context, req *userservice.Relat
 	if whetherExistCurrentUser >= 0 {
 		users = append(users[:whetherExistCurrentUser], users[whetherExistCurrentUser+1:]...)
 	}
+	var lists []*userservice.User
 	// 如果查看的用户是自己，就不需要查询是否已经关注
 	if id == claims.UserId {
 		for i := 0; i < len(users); i++ {
 			users[i].IsFollow = true
-			resp.UserList = append(resp.UserList, &users[i])
+			lists = append(lists, &users[i])
 		}
 	} else {
 		for i := 0; i < len(users); i++ {
@@ -177,10 +181,13 @@ func (s *UserserviceImpl) FriendList(ctx context.Context, req *userservice.Relat
 			} else {
 				users[i].IsFollow = false
 			}
-			resp.UserList = append(resp.UserList, &users[i])
+			lists = append(lists, &users[i])
 		}
 	}
-	resp.StatusMsg = "查询成功"
-	resp.StatusCode = 0
+	resp = &userservice.RelationFriendListResp{
+		UserList:   lists,
+		StatusCode: 0,
+		StatusMsg:  "查询成功",
+	}
 	return resp, nil
 }

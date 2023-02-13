@@ -15,6 +15,7 @@ type Client interface {
 	PublishAction(ctx context.Context, req *videoservice.PublishActionReq, callOptions ...callopt.Option) (r *videoservice.PublishActionResp, err error)
 	CommentAction(ctx context.Context, req *videoservice.CommentActionReq, callOptions ...callopt.Option) (r *videoservice.CommentActionResp, err error)
 	RelationAction(ctx context.Context, req *videoservice.RelationActionReq, callOptions ...callopt.Option) (r *videoservice.RelationActionResp, err error)
+	FavoriteAction(ctx context.Context, req *videoservice.FavoriteActionReq, callOptions ...callopt.Option) (r *videoservice.FavoriteActionResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +65,9 @@ func (p *kVideoServiceClient) CommentAction(ctx context.Context, req *videoservi
 func (p *kVideoServiceClient) RelationAction(ctx context.Context, req *videoservice.RelationActionReq, callOptions ...callopt.Option) (r *videoservice.RelationActionResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.RelationAction(ctx, req)
+}
+
+func (p *kVideoServiceClient) FavoriteAction(ctx context.Context, req *videoservice.FavoriteActionReq, callOptions ...callopt.Option) (r *videoservice.FavoriteActionResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteAction(ctx, req)
 }

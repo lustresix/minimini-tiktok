@@ -35,15 +35,17 @@ func Feed(_ context.Context, c *app.RequestContext) {
 // @router /douyin/user/register [POST]
 func UserRegister(_ context.Context, c *app.RequestContext) {
 	var err error
-	username := c.Query("username")
-	password := c.Query("password")
-	hlog.Info("start call login rpc api")
-	hlog.Infof("name: %v, pass: %v", username, password)
+	var req api.UserRegisterReq
 	resp := &api.UserRegisterResp{}
+	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 1, "status_msg": err.Error()})
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 2, "status_msg": err.Error()})
 		return
 	}
+	username := req.Username
+	password := req.Password
+	hlog.Info("start call login rpc api")
+	hlog.Infof("name: %v, pass: %v", username, password)
 	registerResponse, err := rpc.UserRpcClient.Register(context.Background(), &userservice.UserRegisterReq{
 		Username: username,
 		Password: password,
@@ -53,7 +55,7 @@ func UserRegister(_ context.Context, c *app.RequestContext) {
 		return
 	}
 	resp = &api.UserRegisterResp{
-		StatusCode: int64(registerResponse.StatusCode),
+		StatusCode: registerResponse.StatusCode,
 		StatusMsg:  registerResponse.StatusMsg,
 		UserID:     registerResponse.UserId,
 		Token:      registerResponse.Token,
@@ -65,8 +67,15 @@ func UserRegister(_ context.Context, c *app.RequestContext) {
 // UserLogin .
 // @router /douyin/user/login [POST]
 func UserLogin(_ context.Context, c *app.RequestContext) {
-	username := c.Query("username")
-	password := c.Query("password")
+	var err error
+	var req api.UserRegisterReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{"status_code": 2, "status_msg": err.Error()})
+		return
+	}
+	username := req.Username
+	password := req.Password
 	hlog.Info("start call login rpc api")
 	hlog.Infof("name: %v, pass: %v", username, password)
 	loginResponse, err := rpc.UserRpcClient.Login(context.Background(), &userservice.UserLoginReq{

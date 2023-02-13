@@ -16,9 +16,11 @@ require (
 	github.com/kitex-contrib/registry-nacos v0.0.1
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	github.com/spf13/viper v1.15.0
+	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
 	gorm.io/driver/mysql v1.4.6
 	gorm.io/gen v0.3.21
 	gorm.io/gorm v1.24.5
+	gorm.io/plugin/dbresolver v1.3.0
 	gorm.io/plugin/opentelemetry v0.1.0
 )
 
@@ -104,5 +106,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.0.7 // indirect
 	gorm.io/hints v1.1.0 // indirect
-	gorm.io/plugin/dbresolver v1.3.0 // indirect
 )

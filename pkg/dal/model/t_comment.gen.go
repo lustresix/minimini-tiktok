@@ -12,13 +12,13 @@ const TableNameTComment = "t_comment"
 
 // TComment mapped from table <t_comment>
 type TComment struct {
-	ID         int64     `gorm:"column:id;type:int unsigned;primaryKey;autoIncrement:true" json:"id"` // 评论id
-	UserID     int64     `gorm:"column:user_id;type:int unsigned;not null" json:"user_id"`            // 用户id
-	Content    string    `gorm:"column:content;type:text;not null" json:"content"`                    // 评论内容
-	VideoID    int64     `gorm:"column:video_id;type:int unsigned;not null" json:"video_id"`          // 视频id
-	CreateDate time.Time `gorm:"column:create_date;type:datetime;not null" json:"create_date"`        // 评论发布日期，格式为mm-dd
-	UpdateDate time.Time `gorm:"column:update_date;type:datetime;not null" json:"update_date"`        // 评论更新日期，格式为mm-dd
-	DeleteDate time.Time `gorm:"column:delete_date;type:datetime;not null" json:"delete_date"`        // 评论删除日期，格式为mm-dd
+	ID         int64      `gorm:"column:id;type:int unsigned;primaryKey;autoIncrement:true" json:"id"` // 评论id
+	UserID     int64      `gorm:"column:user_id;type:int unsigned;not null" json:"user_id"`            // 用户id
+	Content    string     `gorm:"column:content;type:text;not null" json:"content"`                    // 评论内容
+	VideoID    int64      `gorm:"column:video_id;type:int unsigned;not null" json:"video_id"`          // 视频id
+	CreateDate time.Time  `gorm:"column:create_date;type:datetime;not null" json:"create_date"`        // 评论发布日期，格式为mm-dd
+	UpdateDate *time.Time `gorm:"column:update_date;type:datetime" json:"update_date"`                 // 评论更新日期，格式为mm-dd
+	DeleteDate *time.Time `gorm:"column:delete_date;type:datetime" json:"delete_date"`                 // 评论删除日期，格式为mm-dd
 }
 
 // TableName TComment's table name

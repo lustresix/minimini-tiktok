@@ -23,6 +23,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PublishAction":  kitex.NewMethodInfo(publishActionHandler, newVideoServicePublishActionArgs, newVideoServicePublishActionResult, false),
 		"CommentAction":  kitex.NewMethodInfo(commentActionHandler, newVideoServiceCommentActionArgs, newVideoServiceCommentActionResult, false),
 		"RelationAction": kitex.NewMethodInfo(relationActionHandler, newVideoServiceRelationActionArgs, newVideoServiceRelationActionResult, false),
+		"FavoriteAction": kitex.NewMethodInfo(favoriteActionHandler, newVideoServiceFavoriteActionArgs, newVideoServiceFavoriteActionResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "videoservice",
@@ -110,6 +111,24 @@ func newVideoServiceRelationActionResult() interface{} {
 	return videoservice.NewVideoServiceRelationActionResult()
 }
 
+func favoriteActionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*videoservice.VideoServiceFavoriteActionArgs)
+	realResult := result.(*videoservice.VideoServiceFavoriteActionResult)
+	success, err := handler.(videoservice.VideoService).FavoriteAction(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceFavoriteActionArgs() interface{} {
+	return videoservice.NewVideoServiceFavoriteActionArgs()
+}
+
+func newVideoServiceFavoriteActionResult() interface{} {
+	return videoservice.NewVideoServiceFavoriteActionResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -155,6 +174,16 @@ func (p *kClient) RelationAction(ctx context.Context, req *videoservice.Relation
 	_args.Req = req
 	var _result videoservice.VideoServiceRelationActionResult
 	if err = p.c.Call(ctx, "RelationAction", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FavoriteAction(ctx context.Context, req *videoservice.FavoriteActionReq) (r *videoservice.FavoriteActionResp, err error) {
+	var _args videoservice.VideoServiceFavoriteActionArgs
+	_args.Req = req
+	var _result videoservice.VideoServiceFavoriteActionResult
+	if err = p.c.Call(ctx, "FavoriteAction", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
