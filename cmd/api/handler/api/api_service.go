@@ -208,6 +208,8 @@ func RelationFriendList(_ context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, result)
 }
 
+// TODO
+
 // FavoriteAction .
 // @router /douyin/favorite/action [POST]
 func FavoriteAction(_ context.Context, c *app.RequestContext) {

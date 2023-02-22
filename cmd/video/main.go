@@ -6,6 +6,7 @@ import (
 	"mini-min-tiktok/cmd/video/mw/cos"
 	"mini-min-tiktok/cmd/video/rpc"
 	"mini-min-tiktok/kitex_gen/videoservice/videoservice"
+	"mini-min-tiktok/pkg/cache"
 	"net"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -29,6 +30,7 @@ func Init() {
 	// 配置的初始化要放在最前面
 	config.Init()
 	rpc.Init()
+	cache.Init()
 	dal.Init()
 	cos.Init()
 	klog.SetLogger(kitexlogrus.NewLogger())

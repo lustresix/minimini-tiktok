@@ -13,6 +13,7 @@
 - rpc框架：kitex
 - 服务注册与服务发现：nacos
 - idl：thrift
+- 文件存储：腾讯cos
 - 链路追踪：opentelemetry + jaeger
 - 安装部署：docker compose
 - 监控数据分析：Grafana + VictoriaMetrics
