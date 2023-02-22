@@ -2,6 +2,7 @@
 极简版抖音后端 kitex+hertz
 
 字节青训项目，但是我接口重复功能的接口就不写了
+先这样吧后面我还会优化一下写一个v2的版本
 
 完整版在 [mini_tiktok](https://github.com/hanyongyan/mini-tiktok)
 
